@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<!-- 
+  DOCTYPE: Tarayıcıya bu sayfanın HTML5 standardıyla yazıldığını söyler.
+  Bunu yazmazsak tarayıcı eski modlarda ("quirks mode") çalışabilir ve
+  CSS'imiz beklediğimiz gibi görünmeyebilir. Her HTML dosyasının 1. satırı budur.
+-->
+<html lang="tr">
+<!-- lang="tr": Ekran okuyuculara ve Google'a sayfanın Türkçe olduğunu söyler. SEO için de önemlidir. -->
+
+<head>
+    <!-- <head> içindeki hiçbir şey ekranda GÖRÜNMEZ. Burası tarayıcıya ve arama motorlarına bilgi verdiğimiz yerdir. -->
+
+    <meta charset="UTF-8">
+    <!-- charset="UTF-8": Türkçe karakterlerin (ş, ğ, ı, ö, ü, ç) bozuk görünmemesi için ZORUNLU satır. -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 
+      BU SATIR MOBİL UYUMLULUĞUN TEMELİDİR!
+      Olmazsa telefon, siteyi masaüstü genişliğindeymiş gibi küçültüp gösterir (metin minik olur).
+      width=device-width  -> Sayfa genişliği, telefonun gerçek ekran genişliği kadar olsun.
+      initial-scale=1.0   -> Sayfa ilk açıldığında yakınlaştırma oranı %100 (normal) olsun.
+    -->
+
+    <meta name="description" content="Yerel esnaf için hızlı web tasarımı, Google Reklamları (Google Ads) ve Google Haritalar optimizasyonu hizmetleri.">
+    <!-- Google arama sonuçlarında başlığın altında çıkan açıklama metni budur. -->
+
+    <title>Dijital Vitrin | Esnaf İçin Web Tasarımı ve Google Reklamları</title>
+    <!-- <title>: Tarayıcı sekmesinde ve Google arama sonuçlarında görünen başlıktır. -->
+
+    <style>
+/* ==========================================================================
+   0. SIFIRLAMA (RESET) VE DEĞİŞKENLER (VARIABLES)
+   ========================================================================== */
+
+/* 
+  * { } : Yıldız, "TÜM elemanlar" demektir (evrensel seçici).
+  Tarayıcılar her HTML etiketine kendi varsayılan boşluklarını (margin/padding) ekler
+  ve bu tarayıcıdan tarayıcıya FARKLI olabilir. Bu satırla hepsini sıfırlayıp
+  herkes için AYNI, tahmin edilebilir bir başlangıç noktası oluşturuyoruz.
+*/
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    /* 
+      box-sizing: border-box -> ÇOK ÖNEMLİ bir satır!
+      Normalde bir kutunun genişliği = width + padding + border toplamıdır (kutu büyür).
+      border-box ile genişlik = SADECE width olur, padding ve border bu genişliğin İÇİNE sığar.
+      Bu sayede "width: 100%" verip padding eklediğimizde kutu taşmaz. Responsive tasarımın temeli budur.
+    */
+}
+
+:root {
+    /* 
+      :root -> Tüm sayfanın "en tepesi" (HTML etiketinin kendisi gibi düşünebilirsin).
+      Burada tanımladığımız "--degisken-adi" şeklindeki değerlere CSS DEĞİŞKENİ denir.
+      Bir rengi 20 yerde kullanacaksak, onu burada 1 kere tanımlarız; değiştirmek istediğimizde
+      tek satırı değiştirmek yeter, 20 yeri tek tek aramamıza gerek kalmaz.
+    */
+
+    /* --- RENK PALETİ: Güven veren lacivert + gri tonları --- */
+    --color-navy: #0b1f3a;
+    /* Ana lacivert: header, buton, başlıklarda kullanılacak en koyu ton */
+    --color-navy-light: #13294b;
+    /* Biraz daha açık lacivert: hero arka planı, kartlarda ikinci katman */
+    --color-navy-soft: #1e3a5f;
+    /* Hover (üzerine gelince) durumlarında kullanılacak orta ton */
+
+    --color-gray-50: #f4f6f8;
+    /* En açık gri: sayfa genel arka planı */
+    --color-gray-100: #e8ecf1;
+    /* Kart arka planları, ince ayraç çizgileri */
+    --color-gray-500: #5b6b7c;
+    /* Orta gri: paragraf/açıklama metinleri (siyahtan daha yumuşak, okunması rahat) */
+    --color-gray-900: #1c2733;
+    /* Neredeyse siyah: başlıklarda kullanılan ana metin rengi */
+
+    --color-gold: #d9a404;
+    /* Vurgu (accent) rengi: küçük detaylarda "kalite/güven" hissi vermek için, AZ kullanılır */
+    --color-whatsapp: #25d366;
+    /* WhatsApp'ın kendi marka rengi: kullanıcı bu yeşili görünce anında "WhatsApp" tanır */
+
+    --color-white: #ffffff;
+
+    /* --- BOŞLUK ÖLÇEĞİ: Tüm sitede TUTARLI boşluklar kullanmak için --- */
+    --space-sm: 0.75rem;
+    /* ~12px */
+    --space-md: 1.5rem;
+    /* ~24px */
+    --space-lg: 3rem;
+    /* ~48px */
+    --space-xl: 5rem;
+    /* ~80px */
+    /* 
+      "rem" birimi: Kullanıcının tarayıcı ayarındaki temel yazı boyutuna göre ölçeklenir
+      (genelde 1rem = 16px). "px" yerine "rem" kullanmak, görme zorluğu çeken kullanıcıların
+      tarayıcıdan yazı boyutunu büyüttüğünde tüm boşlukların da orantılı büyümesini sağlar.
+    */
+
+    /* --- DİĞER TEKRAR EDEN DEĞERLER --- */
+    --radius-sm: 10px;
+    /* Küçük yuvarlatma: butonlar, input kutuları */
+    --radius-lg: 20px;
+    /* Büyük yuvarlatma: kartlar */
+    --shadow-card: 0 10px 30px rgba(11, 31, 58, 0.08);
+    /* Kartların altındaki hafif, lacivert tonlu gölge (siyah yerine markaya uyumlu) */
+    --max-width: 1160px;
+    /* İçeriğin ortalanacağı maksimum genişlik (çok geniş ekranlarda satırlar aşırı uzamasın) */
+}
+
+/* ==========================================================================
+   1. GENEL / TEMEL STİLLER
+   ========================================================================== */
+
+html {
+    scroll-behavior: smooth;
+    /* Menüdeki "#hizmetler" gibi linklere tıklandığında, sayfa aniden değil YUMUŞAKÇA kaysın. */
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    /* 
+      Bu bir "sistem fontu yığını" (font stack). Tarayıcı bu listeyi soldan sağa dener:
+      iPhone/Mac'te -apple-system (San Francisco fontu), Windows'ta Segoe UI, Android'de Roboto
+      kullanılır. Hiçbir font DOSYASI indirmemize gerek kalmaz, bu yüzden sayfa çok hızlı açılır
+      ve yazı, kullanıcının cihazına zaten yerleşik, o cihazda EN net okunan fontla gösterilir.
+    */
+    color: var(--color-gray-900);
+    background-color: var(--color-white);
+    line-height: 1.6;
+    /* 
+      line-height: Satır yüksekliği. 1.6 -> yazı boyutunun 1.6 katı kadar satır arası boşluk.
+      Paragrafların "sıkışık" değil, ferah ve okunması kolay görünmesini sağlar.
+    */
+    -webkit-font-smoothing: antialiased;
+    /* Mac/iOS ekranlarında yazıların daha yumuşak/net görünmesini sağlayan tarayıcıya özel ayar. */
+}
+
+h1, h2, h3 {
+    color: var(--color-gray-900);
+    font-weight: 700;
+    /* 700 = "bold" kalınlığında. Başlıkların gövde metninden görsel olarak ayrışmasını sağlar. */
+    line-height: 1.25;
+    /* Başlıklarda satır arası, paragraftan daha DAR olmalı (1.6 yerine 1.25) çünkü büyük yazıda
+       fazla boşluk başlığı dağınık gösterir. */
+    letter-spacing: -0.02em;
+    /* Harfler arası boşluğu HAFİFÇE daraltır. Büyük punto başlıklarda harfler doğal olarak
+       biraz gevşek durur; bu küçük negatif değer başlığı daha "sıkı" ve profesyonel gösterir. */
+}
+
+h1 { font-size: clamp(2.1rem, 5vw, 3.2rem); }
+/* 
+  clamp(min, tercih-edilen, max): "Akıcı tipografi" tekniği.
+  Anlamı: "Bu yazı en az 2.1rem, en fazla 3.2rem olsun; ikisinin arasında ise
+  ekran genişliğinin %5'i (5vw) kadar olsun."
+  Bu sayede h1 için AYRI AYRI mobil/tablet/masaüstü kuralı yazmamıza gerek kalmaz;
+  ekran daraldıkça yazı KENDİLİĞİNDEN küçülür, taşma veya aşırı büyüklük olmaz.
+*/
+h2 { font-size: clamp(1.7rem, 3.5vw, 2.4rem); }
+h3 { font-size: 1.15rem; }
+
+p { color: var(--color-gray-500); }
+/* Tüm normal paragraflar, başlıklardan daha yumuşak bir gri tonda olsun (görsel hiyerarşi). */
+
+a { text-decoration: none; color: inherit; }
+/* 
+  text-decoration: none -> linklerin altındaki varsayılan alt çizgiyi kaldırır.
+  color: inherit -> linkin rengi, kendi ebeveyninden (içinde bulunduğu kutudan) rengi miras alsın,
+  varsayılan "mavi link" rengini kullanmasın.
+*/
+
+img, svg { max-width: 100%; display: block; }
+/* max-width: 100% -> Görsellerin, içinde bulunduğu kutudan TAŞMASINI engelleyen temel responsive kuralı. */
+
+button { font: inherit; cursor: pointer; border: none; background: none; }
+/* font: inherit -> butonların yazı tipi, sayfanın geri kalanıyla aynı olsun (tarayıcı varsayılanı değil). */
+
+/* --- KAPSAYICI (CONTAINER) --- */
+.container {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    /* margin: 0 auto -> Üst/alt boşluk 0, sağ/sol boşluk OTOMATİK (auto).
+       Bu, kutuyu kendi kapsayıcısının İÇİNDE YATAY olarak ORTALAR. Sitelerde "içerik ortalama" tekniğinin
+       %90'ı budur. */
+    padding: 0 var(--space-md);
+    /* Sağdan ve soldan biraz iç boşluk, içerik ekranın kenarına YAPIŞMASIN diye. */
+}
+
+.section { padding: var(--space-xl) 0; }
+/* Her bölüme üstten/alttan geniş bir boşluk veriyoruz ki bölümler birbirine karışmasın. */
+
+.section-heading { max-width: 640px; margin: 0 auto var(--space-lg); text-align: center; }
+.section-heading-left { margin-left: 0; text-align: left; }
+.section-heading p { margin-top: var(--space-sm); }
+
+/* ==========================================================================
+   2. BUTONLAR (yeniden kullanılabilir bileşen)
+   ========================================================================== */
+
+.btn {
+    display: inline-flex;
+    /* inline-flex: Buton, metin gibi yan yana durabilsin (inline) AMA içindeki
+       ikon+yazıyı flexbox ile ortalayabilelim (flex). İkisinin birleşimi. */
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    /* gap: flex/grid kutularının arasındaki boşluk. Eskiden margin ile uğraşılırdı, artık gap yeterli. */
+    padding: 0.9rem 1.75rem;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 1rem;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+    /* 
+      transition: Bir özellik değiştiğinde (örn. hover'da renk değişince) bu değişimin
+      ANİDEN değil, 0.15 saniyede YUMUŞAKÇA gerçekleşmesini sağlar. "ease" de hızlanma/yavaşlama eğrisidir.
+    */
+}
+
+.btn:hover { transform: translateY(-2px); }
+/* Fareyle üzerine gelindiğinde buton hafifçe YUKARI kalkar (2px), "tıklanabilir" hissini güçlendirir. */
+
+.btn-whatsapp {
+    background-color: var(--color-whatsapp);
+    color: var(--color-white);
+    box-shadow: 0 10px 24px rgba(37, 211, 102, 0.35);
+    /* Butonun kendi renginde, yumuşak bir "parlama" gölgesi -> dikkat çekmesi için tasarlandı. */
+}
+.btn-whatsapp:hover { background-color: #1fb658; }
+
+.btn-ghost {
+    background-color: transparent;
+    color: var(--color-white);
+    border: 1.5px solid rgba(255, 255, 255, 0.4);
+    /* "ghost" (hayalet) buton: dolgusuz, sadece ince bir çerçevesi olan ikincil buton stili.
+       Ana buton (WhatsApp) öne çıksın diye bu buton kasıtlı olarak sade bırakıldı. */
+}
+.btn-ghost:hover { background-color: rgba(255, 255, 255, 0.1); }
+
+.btn-primary {
+    background-color: var(--color-navy);
+    color: var(--color-white);
+    width: 100%;
+    /* Formun altındaki "Talep Gönder" butonu, form genişliği kadar (tam genişlik) olsun. */
+}
+.btn-primary:hover { background-color: var(--color-navy-soft); }
+
+.btn-call {
+    background-color: var(--color-gray-900);
+    color: var(--color-white);
+    font-size: 1.15rem;
+    padding: 1.1rem 2rem;
+    margin-top: var(--space-md);
+    box-shadow: var(--shadow-card);
+    /* Telefon arama butonu bilinçli olarak BÜYÜK ve koyu yapıldı: esnaf müşterisinin
+       form doldurmak yerine tek dokunuşla arayabilmesi bu sitenin öncelikli hedeflerinden biri. */
+}
+.btn-call:hover { background-color: #000; }
+
+/* ==========================================================================
+   3. HEADER (ÜST MENÜ)
+   ========================================================================== */
+
+.site-header {
+    position: sticky;
+    top: 0;
+    /* 
+      position: sticky + top: 0 -> Kullanıcı sayfayı aşağı kaydırdıkça header EKRANIN ÜSTÜNE
+      YAPIŞIR ve orada kalır. Böylece kullanıcı sayfanın neresinde olursa olsun menüye
+      (ve "Hemen Ara" butonuna) her an ulaşabilir.
+    */
+    z-index: 100;
+    /* z-index: Katmanlar arası "kimin önde" olduğunu belirler. Header'ın diğer içeriklerin
+       ÜSTÜNDE görünmesi için yüksek bir değer veriyoruz. */
+    background-color: var(--color-white);
+    border-bottom: 1px solid var(--color-gray-100);
+}
+
+.header-inner {
+    display: flex;
+    /* display: flex -> İçindeki elemanları (logo, menü, buton) YAN YANA dizmenin modern yoludur. */
+    align-items: center;
+    /* Elemanları dikey eksende ORTALAR (logo ile menü linkleri aynı hizada durur). */
+    justify-content: space-between;
+    /* Elemanlar arasındaki boşluğu EŞİT dağıtır; logo sola, menü sağa yaslanır. */
+    height: 76px;
+}
+
+.logo {
+    font-weight: 800;
+    font-size: 1.3rem;
+    color: var(--color-navy);
+}
+.logo span { color: var(--color-gold); }
+/* Logonun "Vitrin" kısmı, marka vurgusu için altın renginde. */
+
+.main-nav {
+    display: flex;
+    align-items: center;
+    gap: var(--space-lg);
+}
+.main-nav a { font-weight: 500; color: var(--color-gray-900); }
+.main-nav a:hover { color: var(--color-navy); }
+
+.nav-call {
+    background-color: var(--color-navy);
+    color: var(--color-white) !important;
+    /* 
+      !important: Normalde CSS'de kaçınılması gereken bir yöntemdir çünkü diğer tüm kuralları
+      EZER. Burada sadece ".main-nav a" seçicisinin rengini kesin olarak geçersiz kılmak için,
+      küçük ve kontrollü bir şekilde kullanıyoruz.
+    */
+    padding: 0.55rem 1.1rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+}
+.nav-call:hover { background-color: var(--color-navy-soft); }
+
+/* --- Mobil menü butonu (hamburger) --- varsayılan olarak GİZLİ, sadece mobilde gösterilecek --- */
+.menu-toggle {
+    display: none;
+    /* Masaüstünde bu butona gerek yok çünkü menü zaten tamamen görünür durumda. */
+    flex-direction: column;
+    gap: 5px;
+    padding: 8px;
+}
+.menu-toggle .bar {
+    width: 24px;
+    height: 2.5px;
+    background-color: var(--color-navy);
+    border-radius: 2px;
+    transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+/* ==========================================================================
+   4. HERO (ANA EKRAN) BÖLÜMÜ
+   ========================================================================== */
+
+.hero {
+    background: linear-gradient(160deg, var(--color-navy) 0%, var(--color-navy-light) 100%);
+    /* 
+      linear-gradient: Düz bir renk yerine, bir renkten diğerine YUMUŞAK GEÇİŞ yapan arka plan.
+      160deg -> geçiş açısı. Bu, koyu lacivertten biraz daha açık lacive doğru köşegen bir geçiş
+      oluşturarak arka planı "düz ve sıkıcı" olmaktan çıkarır, derinlik katar.
+    */
+    color: var(--color-white);
+    padding: var(--space-xl) 0;
+    overflow: hidden;
+    /* İçindeki SVG görseli taşarsa bile bu görünmez alanları keser, yatay kaydırma çubuğu çıkmasın diye. */
+}
+
+.hero-inner {
+    display: grid;
+    /* 
+      display: grid -> Flexbox'a benzer ama 2 boyutlu (satır VE sütun) yerleşim için idealdir.
+      Burada hero'yu "metin | görsel" şeklinde 2 sütuna bölmek için kullanıyoruz.
+    */
+    grid-template-columns: 1.1fr 0.9fr;
+    /* 
+      2 sütun tanımlıyoruz: soldaki (metin) sütun biraz daha geniş (1.1 pay),
+      sağdaki (görsel) biraz daha dar (0.9 pay). "fr" (fraction) = kalan boşluğun payı demektir.
+    */
+    align-items: center;
+    gap: var(--space-lg);
+}
+
+.eyebrow {
+    color: var(--color-gold);
+    font-weight: 600;
+    margin-bottom: var(--space-sm);
+}
+
+.hero h1 { color: var(--color-white); margin-bottom: var(--space-md); }
+
+.hero-sub {
+    color: rgba(255, 255, 255, 0.8);
+    /* Alt metin, ana başlıktan daha SOLUK (opaklık %80) olsun ki gözün önce h1'e gitmesi sağlansın. */
+    font-size: 1.05rem;
+    max-width: 46ch;
+    /* 
+      "ch" birimi: Yaklaşık olarak bir karakterin genişliği kadardır.
+      46ch -> bir satırda en fazla ~46 karakter olsun demektir. Bu, satırların
+      GEREĞİNDEN UZUN olup okumayı zorlaştırmasını engeller (ideal satır uzunluğu 50-75 karakterdir).
+    */
+    margin-bottom: var(--space-md);
+}
+
+.hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    /* flex-wrap: wrap -> Butonlar için yer kalmazsa (dar ekranda), yan yana sıkışmak yerine
+       ALT SATIRA geçerler. Taşma olmaz. */
+    gap: var(--space-sm);
+    margin-bottom: var(--space-md);
+}
+
+.hero-trust {
+    color: rgba(255, 255, 255, 0.65);
+    font-size: 0.9rem;
+}
+
+.hero-visual { display: flex; justify-content: center; }
+.growth-svg { max-width: 380px; }
+
+/* ==========================================================================
+   5. KARTLAR (HİZMETLER VE PROJELER ORTAK YAPISI)
+   ========================================================================== */
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    /* repeat(3, 1fr) -> "1fr genişliğinde bir sütunu 3 KEZ tekrarla" demenin kısa yolu.
+       Sonuç: birbirine eşit genişlikte 3 sütun. */
+    gap: var(--space-md);
+}
+
+.card {
+    background-color: var(--color-white);
+    border: 1px solid var(--color-gray-100);
+    border-radius: var(--radius-lg);
+    padding: var(--space-md);
+    box-shadow: var(--shadow-card);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 36px rgba(11, 31, 58, 0.12);
+    /* Kart üzerine gelindiğinde hafifçe yükselip gölgesi belirginleşir -> "etkileşimli" hissi verir. */
+}
+
+.card-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--space-sm);
+}
+.card-icon svg { width: 26px; height: 26px; }
+
+.icon-navy { background-color: var(--color-navy); color: var(--color-white); }
+.icon-gold { background-color: #fdf3d9; color: var(--color-gold); }
+/* İkon arka planları hizmete göre değişiyor; bu, 3 kartın birbirinin BİREBİR kopyası
+   gibi görünmesini engelleyen küçük ama etkili bir farklılaştırma. */
+
+.card h3 { margin-bottom: var(--space-sm); }
+
+/* --- Proje kartlarına özel: üstte bir "önizleme" alanı ekliyoruz --- */
+.project-card { padding: 0; overflow: hidden; }
+/* Proje kartlarında padding'i 0 yapıp, üst kısımdaki görsel alanının kartın
+   kenarlarına TAM oturmasını (kartın köşeleriyle aynı yuvarlaklıkta) sağlıyoruz. */
+
+.project-thumb {
+    height: 160px;
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    padding: var(--space-sm);
+    /* Gerçek bir tarayıcı penceresi izlenimi vermek için üstte 3 küçük nokta (macOS pencere düğmeleri gibi) */
+}
+.thumb-dot { width: 10px; height: 10px; border-radius: 50%; background-color: rgba(255,255,255,0.5); }
+
+/* Her proje önizlemesine, hizmet renklerimizden oluşan FARKLI bir gradyan veriyoruz.
+   Bu sayede gerçek görsel olmasa da kartlar birbirinden görsel olarak AYRIŞIYOR. */
+.thumb-real { background: linear-gradient(135deg, var(--color-navy) 0%, var(--color-navy-soft) 100%); }
+.thumb-sample-1 { background: linear-gradient(135deg, #2c3e50 0%, #4a6785 100%); }
+.thumb-sample-2 { background: linear-gradient(135deg, var(--color-gray-500) 0%, #35434f 100%); }
+
+.card-body { padding: var(--space-md); }
+
+.badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.25rem 0.65rem;
+    border-radius: 999px;
+    /* border-radius: 999px -> Kutunun köşelerini o kadar çok yuvarlatır ki tam bir "hap/pill" şekli oluşur. */
+    margin-bottom: var(--space-sm);
+}
+.badge-real { background-color: #e6f4ea; color: #1f7a3f; }
+.badge-sample { background-color: var(--color-gray-100); color: var(--color-gray-500); }
+
+/* ==========================================================================
+   6. İLETİŞİM BÖLÜMÜ
+   ========================================================================== */
+
+.contact { background-color: var(--color-gray-50); }
+
+.contact-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-xl);
+    align-items: start;
+}
+
+.contact-form {
+    background-color: var(--color-white);
+    padding: var(--space-lg);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+}
+
+.form-group { margin-bottom: var(--space-md); }
+
+.form-group label {
+    display: block;
+    /* display: block -> label kendi satırını tek başına kaplasın, input bir alt satıra düşsün. */
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 0.4rem;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1.5px solid var(--color-gray-100);
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    /* Formun elemanları da (input, textarea) sitenin geri kalanıyla AYNI fontu kullansın;
+       tarayıcılar varsayılan olarak bunlara farklı bir font atar, bunu engelliyoruz. */
+    font-size: 1rem;
+    resize: vertical;
+    /* resize: vertical -> Kullanıcı textarea'yı sadece DİKEYDE büyütüp küçültebilsin,
+       yatayda kartı bozacak şekilde genişletemesin. */
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    /* Tarayıcının varsayılan (genelde çirkin, mavi) odak çerçevesini kaldırıyoruz... */
+    border-color: var(--color-navy);
+    box-shadow: 0 0 0 3px rgba(11, 31, 58, 0.15);
+    /* ...ama ERİŞİLEBİLİRLİK için kendi tasarımımıza uygun, marka renginde bir odak
+       çerçevesini box-shadow ile GERİ VERİYORUZ. Klavye kullanan kullanıcılar için bu adım şarttır. */
+}
+
+/* ==========================================================================
+   7. FOOTER (ALT BİLGİ)
+   ========================================================================== */
+
+.site-footer { background-color: var(--color-navy); color: rgba(255, 255, 255, 0.7); padding: var(--space-md) 0; }
+.footer-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-sm); }
+.footer-inner a { color: var(--color-white); font-weight: 600; }
+
+/* ==========================================================================
+   8. RESPONSIVE (MOBİL UYUMLULUK) KURALLARI — EN ÖNEMLİ BÖLÜM
+   ========================================================================== 
+   
+   NOT: Yukarıdaki tüm kurallar zaten "mobil öncelikli" mantığa yakın yazıldı
+   (esnek birimler, grid, flex-wrap, clamp() ile akıcı yazı boyutları).
+   Aşağıdaki "media query"ler ise, sadece MASAÜSTÜ İÇİN TASARLANMIŞ ve dar ekranda
+   ÇALIŞMAYACAK olan birkaç düzeni (yan yana sütunlar gibi) mobilde ALT ALTA'ya çeviriyor.
+
+   @media (max-width: 900px) { ... } demek:
+   "Ekran genişliği 900 pikselden KÜÇÜK VEYA EŞİTSE, sadece o zaman bu kuralları uygula."
+   Bu bloğun DIŞINDAKİ tüm kurallar her zaman geçerlidir; media query'ler onların ÜZERİNE
+   yazılıp sadece belirtilen ekran boyutunda devreye girer.
+*/
+
+@media (max-width: 900px) {
+
+    /* --- Hero: 2 sütun yerine, görsel üstte küçük, metin altta tam genişlikte --- */
+    .hero-inner {
+        grid-template-columns: 1fr;
+        /* Tek sütuna indiriyoruz -> öğeler otomatik olarak ALT ALTA dizilir. */
+        text-align: left;
+    }
+    .hero-visual { order: -1; }
+    /* 
+      order: -1 -> Normalde HTML'de hero-text'ten SONRA gelen görseli,
+      Flex/Grid düzeninde diğer öğelerin ÖNÜNE (en başa) alıyoruz.
+      Mobilde önce görseli, sonra metni görmek daha akıcı bir okuma sırası oluşturuyor.
+    */
+    .growth-svg { max-width: 260px; margin: 0 auto var(--space-md); }
+
+    /* --- Hizmet ve proje kartları: 3 sütun yerine tek sütun (alt alta) --- */
+    .card-grid { grid-template-columns: 1fr; }
+
+    /* --- İletişim: form ve metin yan yana değil, alt alta --- */
+    .contact-inner { grid-template-columns: 1fr; }
+
+    /* --- Menü: masaüstü yatay menüyü gizleyip, açılır/kapanır mobil menüye çeviriyoruz --- */
+    .menu-toggle { display: flex; }
+    /* Hamburger butonunu artık GÖSTERİYORUZ (masaüstünde "display:none" idi). */
+
+    .main-nav {
+        position: absolute;
+        /* absolute konumlandırma: Bu menüyü normal akıştan çıkarıp, header'ın HEMEN ALTINA,
+           tam ekran genişliğinde bir panel gibi serbestçe konumlandırmamızı sağlar. */
+        top: 76px;
+        /* Header'ın yüksekliği kadar (76px) aşağıdan başlasın, header'ın üzerine binmesin. */
+        left: 0;
+        right: 0;
+        background-color: var(--color-white);
+        flex-direction: column;
+        /* Mobilde linkler yan yana değil, ALT ALTA (dikey) dizilsin. */
+        align-items: stretch;
+        gap: 0;
+        padding: var(--space-sm) var(--space-md) var(--space-md);
+        border-bottom: 1px solid var(--color-gray-100);
+        box-shadow: var(--shadow-card);
+
+        /* --- Menü varsayılan olarak GİZLİ, JS ile açılınca "is-open" sınıfı eklenecek --- */
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-8px);
+        transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+    }
+
+    .main-nav.is-open {
+        /* 
+          .is-open: JS tarafından butona tıklanınca eklenip çıkarılan bir sınıf.
+          Bu sınıf eklendiğinde menü görünür hale gelir. CSS ile JS'in birlikte çalışma şeklinin
+          en klasik örneklerinden biridir: JS sadece bir "sınıf ekler/çıkarır", GÖRÜNÜMÜ CSS belirler.
+        */
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    .main-nav a {
+        padding: 0.85rem 0;
+        border-bottom: 1px solid var(--color-gray-100);
+    }
+    .main-nav a:last-child { border-bottom: none; }
+
+    .nav-call { text-align: center; margin-top: var(--space-sm); }
+
+    /* --- Hamburger ikonu, menü açıkken bir "X" şekline dönüşsün (görsel geri bildirim) --- */
+    .menu-toggle.is-active .bar:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
+    .menu-toggle.is-active .bar:nth-child(2) { opacity: 0; }
+    .menu-toggle.is-active .bar:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
+    /* 
+      nth-child(1)/(2)/(3): 3 çizgiden 1., 2., 3.'sünü ayrı ayrı hedefleyen seçicilerdir.
+      Üst ve alt çizgiyi döndürüp ortadakini gizleyerek hamburger ikonunu "X" harfine çeviriyoruz.
+    */
+}
+
+@media (max-width: 520px) {
+    /* Çok küçük telefon ekranları için ekstra ince ayarlar */
+    .section { padding: var(--space-lg) 0; }
+    .btn { width: 100%; }
+    /* En dar ekranlarda butonlar tam genişlikte olsun ki büyük, kolay dokunulur hedefler olsunlar
+       (parmakla dokunma için önerilen minimum hedef boyutu ~44px'dir, tam genişlik bunu garantiler). */
+    .hero-actions { flex-direction: column; align-items: stretch; }
+}
+
+    </style>
+    <!-- 
+      Tasarım (renk, boşluk, düzen) kodlarımızın hepsi style.css dosyasında.
+      HTML = "iskelet/içerik", CSS = "kıyafet/görünüm" diye düşünebilirsin.
+    -->
+
+    <!-- 
+      NOT: Google Fonts gibi harici font dosyaları BİLİNÇLİ olarak eklenmedi.
+      Esnaf müşterileri genelde siteyi telefonda ve bazen zayıf internetle açacak.
+      Sistem fontu (telefonun/bilgisayarın zaten yüklü fontu) kullanmak, sitenin
+      GÖZLE GÖRÜLÜR şekilde daha hızlı açılmasını sağlar. Hız = daha az terk eden ziyaretçi.
+    -->
+</head>
+
+<body>
+    <!-- <body>: Kullanıcının tarayıcıda GÖRDÜĞÜ her şey buradadır. -->
+
+    <!-- ======================= ÜST MENÜ (HEADER) ======================= -->
+    <header class="site-header">
+        <!-- <header>: Sayfanın üst kısmı, genelde logo ve menüyü barındırır. Anlamsal (semantic) bir etikettir. -->
+
+        <div class="container header-inner">
+            <!-- 
+              .container sınıfı: İçeriği ekranın tam kenarına yapışık değil,
+              ortada ve belirli bir maksimum genişlikte tutmak için kullandığımız
+              standart bir kalıptır (çoğu sitede vardır). Detayını style.css'de göreceksin.
+            -->
+
+            <a href="#hero" class="logo">Dijital<span>Vitrin</span></a>
+            <!-- 
+              <a>: "anchor" yani bağlantı etiketi. href="#hero" tıklanınca sayfa içinde
+              id="hero" olan bölüme kaydırır (yeni sayfa açmaz).
+              <span>: Metnin bir kısmını (Vitrin) ayrı renklendirmek için kullanılan,
+              görünmez bir "kap" (kutu) etiketidir.
+            -->
+
+            <!-- MOBİL MENÜ AÇMA BUTONU (hamburger ikonu) -->
+            <button class="menu-toggle" id="menuToggle" aria-label="Menüyü aç/kapat" aria-expanded="false">
+                <!-- 
+                  aria-label: Ekran okuyucu (görme engelliler için) bu butonun ne işe yaradığını söyler,
+                  çünkü içinde okunacak bir metin yok, sadece çizgiler var.
+                  aria-expanded: Menünün açık mı kapalı mı olduğunu ekran okuyucuya bildirir,
+                  JS ile true/false yapılır.
+                -->
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <!-- Bu 3 <span>, CSS ile 3 yatay çizgiye dönüştürülüp "hamburger menü" ikonunu oluşturur. -->
+            </button>
+
+            <nav class="main-nav" id="mainNav">
+                <!-- <nav>: Sayfa içi gezinme linklerini gruplayan anlamsal etiket. -->
+                <a href="#hizmetler">Hizmetlerimiz</a>
+                <a href="#projeler">Projelerimiz</a>
+                <a href="#iletisim">İletişim</a>
+                <a href="tel:+905000000000" class="nav-call">
+                    <!-- 
+                      href="tel:...": Telefonda tıklanınca doğrudan arama ekranını açar.
+                      Esnafın telefonundan gelen bir ziyaretçi tek dokunuşla arayabilsin diye.
+                    -->
+                    📞 Hemen Ara
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ======================= 1. HERO (ANA EKRAN) BÖLÜMÜ ======================= -->
+    <section class="hero" id="hero">
+        <!-- 
+          <section>: Sayfayı anlamlı parçalara (bölümlere) ayırmak için kullanılan etiket.
+          id="hero": Menüdeki "#hero" linkinin buraya kaydırılmasını sağlayan benzersiz kimlik.
+        -->
+
+        <div class="container hero-inner">
+
+            <div class="hero-text">
+                <!-- Hero bölümünün SOL tarafında kalacak yazı içeriği -->
+
+                <p class="eyebrow">Esnaf ve Küçük İşletmeler İçin</p>
+                <!-- 
+                  "Eyebrow" (kaş) metni: Ana başlıktan önce gelen küçük, bağlam veren bir etikettir.
+                  Burada gerçekten hedef kitleyi tanımladığı için (dekor değil, bilgi olduğu için) kullanıldı.
+                -->
+
+                <h1>İşletmenizi Dijitale Taşıyın,<br>Yeni Müşteriler Kazanın</h1>
+                <!-- 
+                  <h1>: Sayfadaki EN önemli başlık. Her sayfada sadece 1 tane <h1> olmalı.
+                  Hem kullanıcı hem Google, sayfanın ana konusunu buradan anlar.
+                  <br>: Metni istediğimiz noktadan alt satıra atar (sadece görsel amaçlı, az kullanılmalı).
+                -->
+
+                <p class="hero-sub">
+                    Google Reklamları ile telefonunuz daha bu ay çalmaya başlasın. Mobil uyumlu,
+                    hızlı yüklenen bir web sitesi ve doğru hedef kitleye ulaşan reklam yönetimiyle
+                    işletmenizi arayan müşterilerin karşısına ilk sırada çıkarıyoruz.
+                </p>
+                <!-- Alt başlık: h1'i açan, "neden bize gelmeli" sorusunu cevaplayan destek metni. -->
+
+                <div class="hero-actions">
+                    <a href="https://wa.me/905354895330text=Merhaba%2C%20web%20sitesi%20ve%20Google%20reklam%20hizmetleriniz%20hakk%C4%B1nda%20bilgi%20almak%20istiyorum."
+                        class="btn btn-whatsapp" target="_blank" rel="noopener">
+                        <!--
+                          href="https://wa.me/...": WhatsApp'ın resmi "tıkla-mesaj-yaz" linkidir.
+                           -> ülke kodu (90) + telefon numarası (başında 0 olmadan).
+                          ?text=...    -> WhatsApp açıldığında mesaj kutusuna otomatik yazılacak metin
+                                          (boşluklar %20, virgül %2C gibi "URL kodlaması" ile yazılır).
+                          target="_blank": Linki YENİ bir sekmede açar, kullanıcı sitemizden kopmaz.
+                          rel="noopener": Yeni sekmenin, eski sekmemizin JS koduna erişip
+                                          güvenlik açığı oluşturmasını engelleyen bir güvenlik önlemi.
+                                          target="_blank" her kullanıldığında bunu eklemek iyi bir alışkanlıktır.
+                        -->
+                        WhatsApp'tan İletişime Geçin
+                    </a>
+
+                    <a href="#projeler" class="btn btn-ghost">Projelerimizi İncele</a>
+                    <!-- İkincil (daha az vurgulu) buton: kullanıcıya alternatif bir aksiyon sunar. -->
+                </div>
+
+                <p class="hero-trust">⚡ Hızlı kurulum &nbsp;•&nbsp; 📱 %100 mobil uyumlu &nbsp;•&nbsp; 🎯 Google sertifikalı reklam yönetimi</p>
+                <!-- &nbsp;: "non-breaking space" yani silinmeyen boşluk. Aralarda görsel boşluk bırakmak için. -->
+            </div>
+
+            <div class="hero-visual" aria-hidden="true">
+                <!-- 
+                  aria-hidden="true": Bu tamamen dekoratif bir görsel, bilgi taşımıyor.
+                  Ekran okuyucuların bunu atlayıp gereksiz yere okumamasını sağlarız.
+                -->
+                <svg viewBox="0 0 400 340" xmlns="http://www.w3.org/2000/svg" class="growth-svg">
+                    <!-- 
+                      SVG: Vektörel çizim formatı. Fotoğraf gibi bir dosya indirmek yerine,
+                      bu şekli KODLA çiziyoruz. Bu sayede hem çok hızlı yüklenir hem de
+                      her ekran boyutunda bulanıklaşmadan büyür/küçülür.
+                      Burada basit bir "büyüyen grafik + harita iğnesi" ikonu çiziyoruz;
+                      hizmetlerimizi (reklam=büyüme, harita=Google Haritalar) simgeliyor.
+                    -->
+                    <rect x="0" y="0" width="400" height="340" rx="24" fill="var(--color-navy-light)" />
+                    <!-- Arka plandaki yuvarlak köşeli kart zemini -->
+
+                    <polyline points="40,260 120,190 190,230 270,120 360,60" fill="none" stroke="var(--color-gold)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+                    <!-- Yükselen bir çizgi grafiği: satışların/müşterinin büyümesini temsil ediyor -->
+
+                    <circle cx="40" cy="260" r="7" fill="var(--color-gold)" />
+                    <circle cx="120" cy="190" r="7" fill="var(--color-gold)" />
+                    <circle cx="190" cy="230" r="7" fill="var(--color-gold)" />
+                    <circle cx="270" cy="120" r="7" fill="var(--color-gold)" />
+                    <circle cx="360" cy="60" r="9" fill="#ffffff" />
+                    <!-- Grafik üzerindeki noktalar. Son nokta (bugün/gelecek) beyazla vurgulanıyor. -->
+
+            
+                </svg>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================= 2. HİZMETLERİM BÖLÜMÜ ======================= -->
+    <section class="section services" id="hizmetler">
+        <div class="container">
+
+            <div class="section-heading">
+                <h2>Hizmetlerimiz</h2>
+                <p>İşletmenizin internetteki ilk izlenimini oluşturuyor ve doğru müşteriyle buluşturuyoruz.</p>
+            </div>
+            <!-- <h2>: Bölüm başlıkları için kullanılır. h1'den bir alt seviye önemdedir. -->
+
+            <div class="card-grid">
+                <!-- 
+                  .card-grid: CSS Grid ile 3 kartı yan yana (mobilde alt alta) dizen kapsayıcı.
+                  Grid mantığını style.css'de detaylı açıklıyorum.
+                -->
+
+                <article class="card">
+                    <!-- <article>: Tek başına anlam ifade eden, bağımsız bir içerik bloğu için kullanılır. -->
+                    <div class="card-icon icon-navy">
+                        <!-- Basit inline SVG ikon: harici ikon kütüphanesi indirmeden hızlı ve net simgeler -->
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="4" width="18" height="14" rx="2" />
+                            <path d="M3 9h18M8 4v5" />
+                        </svg>
+                    </div>
+                    <h3>Web Tasarımı</h3>
+                    <p>Hızlı açılan, mobil uyumlu ve şık esnaf siteleri. Müşteriniz telefonundan
+                        girdiğinde saniyeler içinde ne iş yaptığınızı ve nasıl ulaşacağını görür.</p>
+                </article>
+
+                <article class="card">
+                    <div class="card-icon icon-gold">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="9" />
+                            <circle cx="12" cy="12" r="4" />
+                            <circle cx="12" cy="12" r="0.6" fill="currentColor" />
+                        </svg>
+                    </div>
+                    <h3>Google Reklam Yönetimi</h3>
+                    <p>"Elektrikçi", "oto tamirci" gibi aradığınızda sizi arayan müşterilere
+                        nokta atışı ulaşan, bütçenizi doğru kullanan Google Ads kampanyaları kurar ve yönetirim.</p>
+                </article>
+
+                <article class="card">
+                    <div class="card-icon icon-navy">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11Z" />
+                            <circle cx="12" cy="10" r="2.5" />
+                        </svg>
+                    </div>
+                    <h3>Google Haritalar Optimizasyonu</h3>
+                    <p>İşletmeniz "yakınımdaki tamirci" gibi aramalarda Google Haritalar'da öne
+                        çıksın. Profil bilgilerinizi, yorumlarınızı ve konumunuzu doğru şekilde yapılandırırım.</p>
+                </article>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================= 3. PROJELERİM (VİTRİN) BÖLÜMÜ ======================= -->
+    <section class="section projects" id="projeler">
+        <div class="container">
+
+            <div class="section-heading">
+                <h2>Projelerimiz</h2>
+                <p>Geliştirdiğimiz ve örnek olarak tasarladığımız çalışmalardan bazıları.</p>
+            </div>
+
+            <div class="card-grid">
+
+                <!-- PROJE 1: Gerçek proje (Robotik takım sitesi) -->
+                <article class="card project-card">
+                    <div class="project-thumb thumb-real" aria-hidden="true">
+                        <!-- 
+                          Gerçek bir ekran görüntüsü yerine, hız ve basitlik için
+                          CSS ile çizilmiş temsili bir "site önizlemesi" bloğu kullanıyoruz.
+                          İstersen ileride buraya gerçek bir ekran görüntüsü (<img>) koyabilirsin.
+                        -->
+                        <span class="thumb-dot"></span><span class="thumb-dot"></span><span class="thumb-dot"></span>
+                    </div>
+                    <div class="card-body">
+                        <span class="badge badge-real">Canlı Proje</span>
+                        <h3>Robotik Takım Tanıtım Sitesi</h3>
+                        <p>Robotik takımım (11818) için sıfırdan kodladığım, mobil uyumlu ve
+                            dinamik bir iletişim formuna sahip kurumsal tanıtım sitesi.</p>
+                    </div>
+                </article>
+
+                <!-- PROJE 2: Örnek proje (Usta Çağır landing page) -->
+                <article class="card project-card">
+                    <div class="project-thumb thumb-sample-1" aria-hidden="true">
+                        <span class="thumb-dot"></span><span class="thumb-dot"></span><span class="thumb-dot"></span>
+                    </div>
+                    <div class="card-body">
+                        <span class="badge badge-sample">Örnek Proje</span>
+                        <h3>"Usta Çağır" Landing Page</h3>
+                        <p>Yerel bir işletme için tasarlanmış, tek sayfalık, hızlı yüklenen ve
+                            büyük "Usta Çağır" butonuyla anında talep almayı hedefleyen bir web sitesi tasarımı.</p>
+                    </div>
+                </article>
+
+                <!-- PROJE 3: Örnek proje (Butik dükkan) -->
+                <article class="card project-card">
+                    <div class="project-thumb thumb-sample-2" aria-hidden="true">
+                        <span class="thumb-dot"></span><span class="thumb-dot"></span><span class="thumb-dot"></span>
+                    </div>
+                    <div class="card-body">
+                        <span class="badge badge-sample">Örnek Proje</span>
+                        <h3>Butik Dükkan Sitesi</h3>
+                        <p>Ürün galerisi ve WhatsApp üzerinden doğrudan sipariş alınabilen
+                            entegrasyona sahip, küçük ölçekli bir butik mağaza web sitesi tasarımı.</p>
+                    </div>
+                </article>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================= 4. İLETİŞİM BÖLÜMÜ ======================= -->
+    <section class="section contact" id="iletisim">
+        <div class="container contact-inner">
+
+            <div class="contact-text">
+                <div class="section-heading section-heading-left">
+                    <h2>Hemen İletişime Geçin</h2>
+                    <p>İşletmeniz için ücretsiz ön görüşme yapalım. Formu doldurun, size en kısa
+                        sürede dönelim; ya da doğrudan arayın.</p>
+                </div>
+
+                <a href="tel:+905354895330" class="btn btn-call">
+                    📞 05354895330 — Hemen Ara
+                </a>
+                <!-- 
+                  Büyük telefon arama butonu: Esnaf müşterileri genelde form doldurmaktansa
+                  aramayı tercih eder. Bu yüzden bu buton görsel olarak öne çıkarılıyor (style.css'de büyük).
+                -->
+            </div>
+
+            <form class="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+                <!-- 
+                  action="https://formspree.io/f/YOUR_FORM_ID":
+                  Formspree, formu KENDİ SUNUCUN OLMADAN e-postana ileten ücretsiz bir servistir.
+                  formspree.io'da ücretsiz hesap açtığında sana özel bir ID verir,
+                  YOUR_FORM_ID yazan yeri o ID ile değiştirmen yeterli (örn: f/mzbqjkvp).
+                  method="POST": Form verisini adres çubuğunda göstermeden, gizlice sunucuya gönderir.
+                -->
+
+                <div class="form-group">
+                    <label for="ad">Adınız Soyadınız</label>
+                    <!-- 
+                      <label for="ad">: Bu etiketle input'u eşleştiriyoruz.
+                      Kullanıcı yazıya tıklasa bile input'a odaklanır; ayrıca ekran okuyucular için ZORUNLUDUR.
+                    -->
+                    <input type="text" id="ad" name="ad" placeholder="Örn: Ahmet Yılmaz" required>
+                    <!-- 
+                      id="ad": label'ın "for" değeriyle eşleşen benzersiz kimlik.
+                      name="ad": Form gönderildiğinde bu verinin hangi isimle gideceği (Formspree e-postasında görünür).
+                      required: Bu alan doldurulmadan form gönderilemez (tarayıcı otomatik uyarır).
+                    -->
+                </div>
+
+                <div class="form-group">
+                    <label for="telefon">Telefon Numaranız</label>
+                    <input type="tel" id="telefon" name="telefon" placeholder="05XX XXX XX XX" required>
+                    <!-- type="tel": Mobilde sayısal telefon klavyesinin otomatik açılmasını sağlar. -->
+                </div>
+
+                <div class="form-group">
+                    <label for="ihtiyac">Neye İhtiyacınız Var?</label>
+                    <textarea id="ihtiyac" name="ihtiyac" rows="4" placeholder="Örn: Yeni bir web sitesi ve Google reklamı istiyorum." required></textarea>
+                    <!-- <textarea>: Çok satırlı metin girişi için kullanılır. rows="4": başlangıçta 4 satır yüksekliğinde görünür. -->
+                </div>
+
+                <button type="submit" class="btn btn-primary">Talep Gönder</button>
+                <!-- type="submit": Bu butona basıldığında formun tüm verisi action adresine gönderilir. -->
+            </form>
+        </div>
+    </section>
+
+    <!-- ======================= ALT BİLGİ (FOOTER) ======================= -->
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <p>&copy; 2026 DijitalVitrin. Tüm hakları saklıdır.</p>
+            <!-- &copy;: "©" telif hakkı simgesini yazmanın HTML karşılığı ("HTML entity" denir). -->
+            <a href="https://wa.me/905354895330" target="_blank" rel="noopener">WhatsApp'tan iletişime geçin.</a>
+        </div>
+    </footer>
+
+    <script>
+// ============================================================================
+// script.jsz
+// Bu dosyanın TEK görevi: mobilde hamburger butonuna tıklanınca menüyü açıp kapatmak.
+// HTML/CSS öğrenimine odaklandığın için burayı bilerek çok kısa ve sade tuttum.
+// ============================================================================
+
+// 1. Sayfadaki ilgili HTML elemanlarını JavaScript'e "yakalıyoruz" (seçiyoruz).
+const menuToggle = document.getElementById("menuToggle"); // Hamburger butonu
+const mainNav = document.getElementById("mainNav");       // Menü linklerini içeren <nav>
+
+// 2. Butona tıklama olayını dinliyoruz.
+menuToggle.addEventListener("click", function () {
+  // "classList.toggle": Eğer sınıf VARSA kaldırır, YOKSA ekler.
+  // Yani her tıklamada menü açık/kapalı durumu arasında GİDİP GELİR.
+  mainNav.classList.toggle("is-open");     // CSS'teki .main-nav.is-open kuralını tetikler (menüyü gösterir)
+  menuToggle.classList.toggle("is-active"); // CSS'teki .menu-toggle.is-active kuralını tetikler (X şekli)
+
+  // 3. Ekran okuyucular için erişilebilirlik bilgisini güncelliyoruz.
+  const isOpen = mainNav.classList.contains("is-open");
+  menuToggle.setAttribute("aria-expanded", isOpen); // true/false olarak günceller
+});
+
+// 4. Kullanıcı menüdeki bir linke (örn. "İletişim") tıklayınca menü otomatik kapansın.
+//    Aksi halde kullanıcı linke tıklar, sayfa kayar ama açık menü ekranı kaplamaya devam eder.
+const navLinks = mainNav.querySelectorAll("a");
+navLinks.forEach(function (link) {
+  link.addEventListener("click", function () {
+    mainNav.classList.remove("is-open");
+    menuToggle.classList.remove("is-active");
+    menuToggle.setAttribute("aria-expanded", "false");
+  });
+});
+
+    </script>
+    <!-- 
+      Script dosyasını sayfanın EN ALTINA koyuyoruz ki tarayıcı önce görünen içeriği (HTML+CSS)
+      göstersin, JS'i en son çalıştırsın. Bu da sayfanın kullanıcıya daha HIZLI görünmesini sağlar.
+    -->
+</body>
+</html>
